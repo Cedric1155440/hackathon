@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>schedule</title>
+<style>
+  :root { --bg:#0a0a0a; --fg:#d8d8d8; --dim:#777; --green:#50c840; --amber:#6cb8f0; --red:#d04040; --blue:#4a90d8; --magenta:#c050c8; --line:#222; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.5 "Noto Sans Mono","DejaVu Sans Mono",ui-monospace,Menlo,Consolas,monospace; padding:24px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  .prompt { color:var(--fg); }
+  .user { color:var(--red); }
+  .dim { color:var(--dim); }
+  h2 { font-size:14px; font-weight:normal; margin:28px 0 8px; color:var(--magenta); }
+  .nav button { background:none; border:1px solid #333; color:var(--fg); font:inherit; padding:2px 10px; cursor:pointer; }
+  .nav button:hover { border-color:var(--green); color:var(--green); }
+  .grid { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-top:12px; }
+  .day { border:1px solid var(--line); padding:8px; min-width:0; }
+  .day.today { border-color:var(--green); }
+  .day h3 { margin:0 0 6px; font-size:13px; color:var(--magenta); font-weight:normal; }
+  .lesson { padding:3px 0; border-top:1px solid #161616; }
+  .lesson:first-of-type { border-top:none; }
+  .time { color:var(--dim); }
+  .subj { color:var(--fg); }
+  .meta { color:var(--dim); font-size:12px; }
+  .cancelled .subj { color:var(--red); text-decoration:line-through; }
+  .cancelled .tag { color:var(--red); }
+  .substituted .tag, .room_changed .tag { color:var(--amber); }
+  .tag { font-size:12px; }
+  .note { color:var(--amber); font-size:12px; }
+  .hw { margin:6px 0; }
+  .hw .due { color:var(--amber); }
+  .hw .done { color:var(--green); }
+  .hw .txt { color:var(--fg); white-space:pre-wrap; display:block; margin-left:2ch; }
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div><span class="prompt">[<span class="user">hangul</span>@school ~]$</span> schedule <span id="range" class="dim"></span></div>
+  <div class="nav" style="margin-top:8px">
+    <button id="prev">&lt; prev</button>
+    <button id="today">today</button>
+    <button id="next">next &gt;</button>
+    <span id="status" class="dim" style="margin-left:12px"></span>
+  </div>
+  <div class="grid" id="grid"></div>
+
+  <h2><span class="prompt">[<span class="user">hangul</span>@school ~]$</span> homework --open</h2>
+  <div id="hw"></div>
+</div>
+
+<script>
+let week = 0;
+const DAYS = ["Mon","Tue","Wed","Thu","Fri"];
+const $ = id => document.getElementById(id);
+const hm = iso => iso.slice(11,16);
+const esc = s => String(s).replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+
+async function loadTimetable() {
+  $("status").textContent = "loading...";
+  const r = await fetch(`/api/timetable?week=${week}`);
+  const d = await r.json();
+  $("range").textContent = `${d.start} .. ${d.end}`;
+  $("status").textContent = `${d.lessons.length} lessons`;
+  const todayStr = new Date().toLocaleDateString("sv");
+  const start = new Date(d.start + "T00:00");
+  $("grid").innerHTML = DAYS.map((name, i) => {
+    const day = new Date(start); day.setDate(start.getDate() + i);
+    const ds = day.toLocaleDateString("sv");
+    const ls = d.lessons.filter(l => l.start.startsWith(ds));
+    const rows = ls.map(l => `
+      <div class="lesson ${l.status}">
+        <span class="time">${hm(l.start)}</span> <span class="subj">${esc(l.subject)}</span>
+        ${l.status !== "normal" ? `<span class="tag">[${l.status.replace("_"," ")}]</span>` : ""}
+        <div class="meta">${esc(l.rooms.join(", ") || "-")} · ${esc(l.teachers.join(", ") || "-")}</div>
+        ${l.note ? `<div class="note">${esc(l.note)}</div>` : ""}
+      </div>`).join("") || `<span class="dim">no lessons</span>`;
+    return `<div class="day ${ds === todayStr ? "today" : ""}"><h3>${name} ${ds.slice(5)}</h3>${rows}</div>`;
+  }).join("");
+}
+
+async function loadHomework() {
+  const r = await fetch("/api/homework");
+  const hw = (await r.json()).filter(h => !h.completed).sort((a,b) => a.due.localeCompare(b.due));
+  $("hw").innerHTML = hw.map(h => `
+    <div class="hw"><span class="due">due ${h.due}</span> ${esc(h.subject || "?")} <span class="dim">(${esc(h.teacher || "-")})</span>
+    <span class="txt">${esc(h.text)}</span></div>`).join("") || `<span class="dim">nothing open</span>`;
+}
+
+$("prev").onclick = () => { week--; loadTimetable(); };
+$("next").onclick = () => { week++; loadTimetable(); };
+$("today").onclick = () => { week = 0; loadTimetable(); };
+loadTimetable(); loadHomework();
+</script>
+</body>
+</html>
