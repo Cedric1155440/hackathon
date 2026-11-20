@@ -16,6 +16,10 @@ def _parse_untis_date(n: int) -> date:
     return datetime.strptime(str(n), "%Y%m%d").date()
 
 
+def _at(day: date, hhmm: int) -> datetime:
+    return datetime(day.year, day.month, day.day, hhmm // 100, hhmm % 100)
+
+
 class RealUntisProvider(UntisProvider):
     """WebUntis via python-webuntis (timetable, exams) plus the raw REST API (homework)."""
 
@@ -46,22 +50,45 @@ class RealUntisProvider(UntisProvider):
 
     def timetable(self, start: date, end: date) -> list[Lesson]:
         self._ensure()
+        s = self._session
+        # Use the raw response: the library drops room ids and substitution info.
+        _, method, params = s._timetable_extended_raw(
+            end, start, s.login_result["personId"], s.login_result["personType"]
+        )
+        raw = s._request(method, params)
+        subjects = {x.id: x.name for x in s.subjects()}
+        teachers = {x.id: x.name for x in s.teachers()}
+        rooms = {x.id: x.name for x in s.rooms()}
+
+        def names(items: list[dict], table: dict[int, str]) -> list[str]:
+            return [table.get(i["id"], "?") for i in items if i.get("id")]
+
+        def changed(items: list[dict]) -> bool:
+            return any(i.get("orgid") for i in items)
+
         lessons = []
-        for p in self._session.my_timetable(start=start, end=end):
-            code = (p.code or "").lower()
-            status = {
-                "cancelled": LessonStatus.CANCELLED,
-                "irregular": LessonStatus.SUBSTITUTED,
-            }.get(code, LessonStatus.NORMAL)
+        for p in raw:
+            day = _parse_untis_date(p["date"])
+            if p.get("code") == "cancelled":
+                status = LessonStatus.CANCELLED
+            elif changed(p.get("te", [])):
+                status = LessonStatus.SUBSTITUTED
+            elif changed(p.get("ro", [])):
+                status = LessonStatus.ROOM_CHANGED
+            elif p.get("code") == "irregular":
+                status = LessonStatus.SUBSTITUTED
+            else:
+                status = LessonStatus.NORMAL
             lessons.append(
                 Lesson(
-                    id=getattr(p, "id", None),
-                    subject=", ".join(s.name for s in p.subjects) or "?",
-                    teachers=[t.name for t in p.teachers],
-                    rooms=[r.name for r in p.rooms],
-                    start=p.start,
-                    end=p.end,
+                    id=p["id"],
+                    subject=", ".join(names(p.get("su", []), subjects)) or "?",
+                    teachers=names(p.get("te", []), teachers),
+                    rooms=names(p.get("ro", []), rooms),
+                    start=_at(day, p["startTime"]),
+                    end=_at(day, p["endTime"]),
                     status=status,
+                    note=p.get("substText") or p.get("info") or p.get("lstext") or "",
                 )
             )
         return sorted(lessons, key=lambda x: x.start)

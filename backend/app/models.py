@@ -19,6 +19,7 @@ class Lesson(BaseModel):
     start: datetime
     end: datetime
     status: LessonStatus = LessonStatus.NORMAL
+    note: str = ""               # substitution / lesson text from Untis
 
 
 class Homework(BaseModel):
