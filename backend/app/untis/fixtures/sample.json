@@ -1,0 +1,14 @@
+{
+  "lessons": [
+    {"id": 1, "subject": "PH-GK1", "teachers": ["MOCK"], "rooms": ["A101"], "day": 0, "start": "09:05", "end": "09:50", "status": "normal"},
+    {"id": 2, "subject": "M-GK4",  "teachers": ["MOCK"], "rooms": ["B204"], "day": 0, "start": "10:35", "end": "11:20", "status": "normal"},
+    {"id": 3, "subject": "E5-GK3", "teachers": ["MOCK"], "rooms": ["C007"], "day": 1, "start": "08:00", "end": "08:45", "status": "cancelled"},
+    {"id": 4, "subject": "D-GK4",  "teachers": ["MOCK"], "rooms": ["A110"], "day": 2, "start": "09:05", "end": "09:50", "status": "room_changed"}
+  ],
+  "homework": [
+    {"id": 9001, "lesson_id": 2, "subject": "M-GK4", "teacher": "MOCK", "assigned_offset": -2, "due_offset": 3, "text": "Aufgabenblatt 5, Nr. 1-4", "completed": false}
+  ],
+  "exams": [
+    {"id": 1, "subject": "M-GK4", "offset": 14, "text": "Klausur Analysis"}
+  ]
+}
