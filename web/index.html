@@ -33,6 +33,15 @@
   .hw .due { color:var(--amber); }
   .hw .done { color:var(--green); }
   .hw .txt { color:var(--fg); white-space:pre-wrap; display:block; margin-left:2ch; }
+  textarea { width:100%; min-height:110px; background:#0f0f0f; color:var(--fg); border:1px solid #333; font:inherit; padding:8px; resize:vertical; }
+  textarea:focus { outline:none; border-color:var(--magenta); }
+  .run { background:none; border:1px solid #333; color:var(--fg); font:inherit; padding:2px 12px; cursor:pointer; margin-top:6px; }
+  .run:hover { border-color:var(--magenta); color:var(--magenta); }
+  .sec { color:var(--magenta); margin-top:10px; }
+  .res ul { margin:2px 0 0; padding-left:2ch; list-style:none; }
+  .res li::before { content:"- "; color:var(--dim); }
+  .ok { color:var(--green); }
+  .miss { color:var(--red); }
   @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
 </style>
 </head>
@@ -49,6 +58,11 @@
 
   <h2><span class="prompt">[<span class="user">hangul</span>@school ~]$</span> homework --open</h2>
   <div id="hw"></div>
+
+  <h2><span class="prompt">[<span class="user">hangul</span>@school ~]$</span> analyze --lesson</h2>
+  <textarea id="tx" placeholder="paste a lesson transcript..."></textarea>
+  <div><button class="run" id="go">run</button> <span id="astatus" class="dim"></span></div>
+  <div class="res" id="res"></div>
 </div>
 
 <script>
@@ -92,6 +106,24 @@ async function loadHomework() {
 $("prev").onclick = () => { week--; loadTimetable(); };
 $("next").onclick = () => { week++; loadTimetable(); };
 $("today").onclick = () => { week = 0; loadTimetable(); };
+
+const list = (title, xs) => xs.length ? `<div class="sec">${title}</div><ul>${xs.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : "";
+$("go").onclick = async () => {
+  const transcript = $("tx").value.trim();
+  if (!transcript) return;
+  $("astatus").textContent = "analyzing...";
+  const r = await fetch("/api/analyze", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ transcript }) });
+  if (!r.ok) { $("astatus").textContent = `error ${r.status}`; return; }
+  const a = await r.json();
+  $("astatus").textContent = `llm: ${a.llm}` + (a.lesson ? ` · lesson: ${a.lesson.subject}` : " · lesson: unknown");
+  const cc = a.crosscheck.map(c => c.in_untis
+    ? `<li><span class="ok">[in untis]</span> ${esc(c.spoken.text)}</li>`
+    : `<li><span class="miss">[NOT IN UNTIS]</span> ${esc(c.spoken.text)}${c.spoken.due ? ` <span class="dim">(due ${esc(c.spoken.due)})</span>` : ""}</li>`).join("");
+  $("res").innerHTML =
+    `<div class="sec">summary</div><div>${esc(a.note.summary)}</div>` +
+    list("concepts", a.note.concepts) + list("definitions", a.note.definitions) + list("test hints", a.note.test_hints) +
+    (cc ? `<div class="sec">homework cross-check</div><ul>${cc}</ul>` : "");
+};
 loadTimetable(); loadHomework();
 </script>
 </body>
