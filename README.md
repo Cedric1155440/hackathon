@@ -1,6 +1,5 @@
 # Timetable-aware second brain for school
 
-AI Coding Hackathon, STARTPLATZ Cologne, 20-22 Nov 2026.
 Loop: lesson -> notes -> tasks -> revision, driven by an agent that knows the WebUntis timetable.
 See `docs/idea.md` for the pitch and `docs/structure.md` for the planned layout.
 
