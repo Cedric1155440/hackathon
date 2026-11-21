@@ -1,251 +1,264 @@
 <!doctype html>
-<html lang="en">
+<html lang="de">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Second Brain · School</title>
+<meta name="theme-color" content="#1c1a24">
+<title>Feierabend · Hausaufgaben</title>
 <style>
   :root {
-    --bg: #f6f7f9;
-    --surface: #ffffff;
-    --fg: #16181d;
-    --muted: #6b7280;
-    --faint: #9ca3af;
-    --line: #e7e9ee;
-    --accent: #4f46e5; --on-accent: #fff;
-    --accent-soft: #eef0ff;
-    --ok: #15803d;      --ok-soft: #e8f6ee;
-    --warn: #b45309;    --warn-soft: #fdf3e4;
-    --bad: #c62828;     --bad-soft: #fdecec;
-    --radius: 14px;
-    --shadow: 0 1px 2px rgba(16,24,40,.04), 0 1px 3px rgba(16,24,40,.06);
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #0e1014; --surface: #161920; --fg: #e8eaee; --muted: #9aa1ad; --faint: #6b7280;
-      --line: #242832; --accent: #8b8cf8; --on-accent: #0e1014; --accent-soft: #23243a;
-      --ok: #4ade80; --ok-soft: #14271c; --warn: #fbbf24; --warn-soft: #2a2213; --bad: #f87171; --bad-soft: #2c1617;
-      --shadow: none;
-    }
+    --bg: #1c1a24;
+    --card: #25222f;
+    --card-2: #2c2937;
+    --fg: #ece5da;
+    --muted: #a39cad;
+    --faint: #6f6879;
+    --peach: #f2b98b;
+    --sage: #9fc7a8;
+    --rose: #e79a9a;
+    --sand: #e6c88f;
+    --radius: 18px;
   }
   * { box-sizing: border-box; }
+  html { background: var(--bg); }
   body {
-    margin: 0; background: var(--bg); color: var(--fg);
-    font: 15px/1.5 Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    margin: 0; min-height: 100vh; color: var(--fg);
+    background: radial-gradient(1200px 600px at 80% -10%, #3a2e45 0%, transparent 60%),
+                radial-gradient(900px 500px at -10% 10%, #2d2a3e 0%, transparent 55%), var(--bg);
+    font: 16px/1.6 Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
-  .wrap { max-width: 1180px; margin: 0 auto; padding: 28px 24px 64px; }
+  .wrap { max-width: 620px; margin: 0 auto; padding: 56px 22px 80px; }
 
-  /* header */
-  header { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 28px; }
-  .brand { display: flex; align-items: center; gap: 12px; }
-  .logo { width: 36px; height: 36px; border-radius: 10px; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font-weight: 700; }
-  .brand h1 { font-size: 18px; margin: 0; font-weight: 650; letter-spacing: -.01em; }
-  .brand p { margin: 0; color: var(--muted); font-size: 13px; }
+  .hello { font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; font-size: 34px; font-weight: 400; margin: 0; letter-spacing: -.01em; }
+  .sub { color: var(--muted); margin: 6px 0 0; }
 
-  /* buttons */
-  .btn {
-    font: inherit; font-size: 14px; font-weight: 500; cursor: pointer;
-    background: var(--surface); color: var(--fg); border: 1px solid var(--line);
-    padding: 7px 14px; border-radius: 10px; transition: border-color .15s, background .15s;
+  h2 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--faint); margin: 44px 0 14px; }
+
+  /* homework */
+  .hw {
+    display: flex; gap: 14px; align-items: flex-start; width: 100%; text-align: left;
+    background: var(--card); border: 0; border-radius: var(--radius); padding: 18px 18px;
+    margin-bottom: 10px; color: inherit; font: inherit; cursor: pointer;
+    transition: background .2s, opacity .3s, transform .2s;
   }
-  .btn:hover { border-color: var(--faint); }
-  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
-  .btn.primary:hover { filter: brightness(1.08); }
-  .btn:disabled { opacity: .6; cursor: default; }
-  .seg { display: inline-flex; }
-  .seg .btn { border-radius: 0; margin-left: -1px; }
-  .seg .btn:first-child { border-radius: 10px 0 0 10px; margin-left: 0; }
-  .seg .btn:last-child { border-radius: 0 10px 10px 0; }
-
-  /* sections */
-  .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
-  .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 0 0 14px; }
-  .section-head h2 { font-size: 16px; font-weight: 650; margin: 0; letter-spacing: -.01em; }
-  .muted { color: var(--muted); font-size: 13px; }
-
-  /* week grid */
-  .grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
-  .day { padding: 14px; min-height: 160px; }
-  .day.today { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
-  .day-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
-  .day-name { font-weight: 600; font-size: 14px; }
-  .day-date { color: var(--muted); font-size: 13px; }
-  .today .day-date { color: var(--accent); font-weight: 600; }
-  .lesson {
-    position: relative; padding: 9px 10px 9px 13px; border-radius: 10px; background: var(--bg);
-    margin-bottom: 8px; overflow: hidden;
+  .hw:hover { background: var(--card-2); }
+  .hw:active { transform: scale(.99); }
+  .check {
+    flex: none; width: 24px; height: 24px; border-radius: 50%; margin-top: 2px;
+    border: 2px solid var(--faint); display: grid; place-items: center; transition: all .2s;
   }
-  .lesson::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--c, var(--accent)); }
-  .lesson .row { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
-  .lesson .subj { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .lesson .time { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
-  .lesson .meta { color: var(--muted); font-size: 12px; margin-top: 2px; }
-  .lesson .note { font-size: 12px; margin-top: 4px; color: var(--warn); }
-  .lesson.cancelled { opacity: .75; }
-  .lesson.cancelled .subj { text-decoration: line-through; color: var(--muted); }
-  .badge { font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 999px; white-space: nowrap; }
-  .badge.cancelled { background: var(--bad-soft); color: var(--bad); }
-  .badge.substituted, .badge.room_changed { background: var(--warn-soft); color: var(--warn); }
-  .badge.ok { background: var(--ok-soft); color: var(--ok); }
-  .badge.miss { background: var(--bad-soft); color: var(--bad); }
-  .empty { color: var(--faint); font-size: 13px; padding: 6px 2px; }
+  .check svg { width: 13px; height: 13px; opacity: 0; transition: opacity .2s; }
+  .hw.done { opacity: .45; }
+  .hw.done .check { background: var(--sage); border-color: var(--sage); }
+  .hw.done .check svg { opacity: 1; }
+  .hw.done .txt { text-decoration: line-through; }
+  .hw .top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+  .hw .subj { font-weight: 600; }
+  .hw .when { font-size: 14px; color: var(--muted); white-space: nowrap; }
+  .hw .when.soon { color: var(--peach); }
+  .hw .txt { color: var(--fg); opacity: .9; margin-top: 2px; white-space: pre-wrap; }
+  .calm { background: var(--card); border-radius: var(--radius); padding: 28px; text-align: center; color: var(--muted); }
+  .calm b { display: block; color: var(--sage); font-weight: 500; font-size: 18px; margin-bottom: 2px; }
 
-  /* lower area */
-  .cols { display: grid; grid-template-columns: 1fr 1.4fr; gap: 20px; margin-top: 36px; align-items: start; }
-  .panel { padding: 20px; }
-  .hw { display: flex; gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); }
-  .hw:first-child { border-top: none; padding-top: 0; }
-  .hw .due { flex: none; width: 54px; text-align: center; border-radius: 10px; background: var(--accent-soft); color: var(--accent); padding: 6px 0; line-height: 1.15; }
-  .hw .due b { display: block; font-size: 17px; }
-  .hw .due span { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
-  .hw .subj { font-weight: 600; font-size: 14px; }
-  .hw .txt { font-size: 14px; white-space: pre-wrap; margin-top: 2px; }
+  /* lessons */
+  .lessons { background: var(--card); border-radius: var(--radius); padding: 6px 18px; }
+  .lesson { display: flex; gap: 14px; align-items: baseline; padding: 11px 0; border-top: 1px solid #ffffff0d; }
+  .lesson:first-child { border-top: 0; }
+  .lesson .time { color: var(--faint); font-size: 14px; font-variant-numeric: tabular-nums; width: 44px; flex: none; }
+  .lesson .subj { flex: 1; }
+  .lesson .room { color: var(--muted); font-size: 14px; }
+  .lesson.cancelled .subj { text-decoration: line-through; color: var(--faint); }
+  .tag { font-size: 12px; padding: 1px 9px; border-radius: 999px; margin-left: 8px; }
+  .tag.cancelled { color: var(--rose); background: #e79a9a1f; }
+  .tag.substituted, .tag.room_changed { color: var(--sand); background: #e6c88f1f; }
+  .note { font-size: 13px; color: var(--sand); }
+  .empty { color: var(--faint); padding: 12px 0; }
+
+  /* folded extras */
+  details { margin-top: 14px; background: #ffffff06; border-radius: var(--radius); }
+  details[open] { background: var(--card); }
+  summary { cursor: pointer; list-style: none; padding: 16px 18px; color: var(--muted); display: flex; justify-content: space-between; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; color: var(--faint); }
+  details[open] summary::after { content: "–"; }
+  .inner { padding: 0 18px 18px; }
+  .weeknav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; color: var(--muted); font-size: 14px; }
+  .ghost { background: none; border: 0; color: var(--muted); font: inherit; cursor: pointer; padding: 4px 8px; border-radius: 8px; }
+  .ghost:hover { background: #ffffff0d; color: var(--fg); }
+  .dayname { margin: 16px 0 2px; font-size: 14px; color: var(--peach); }
+  .dayname.today::after { content: " · heute"; color: var(--faint); }
+  #grid .lesson { padding: 6px 0; border: 0; }
 
   textarea {
-    width: 100%; min-height: 140px; resize: vertical; font: inherit; font-size: 14px;
-    background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 10px; padding: 12px;
+    width: 100%; min-height: 120px; resize: vertical; font: inherit; font-size: 15px;
+    background: var(--bg); color: var(--fg); border: 1px solid #ffffff14; border-radius: 12px; padding: 12px;
   }
-  textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
-  .actions { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
-  .res:empty { display: none; }
-  .res { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 16px; }
-  .res h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 16px 0 6px; font-weight: 600; }
-  .res h3:first-child { margin-top: 0; }
+  textarea:focus { outline: none; border-color: var(--peach); }
+  .btn { margin-top: 10px; background: var(--peach); color: #2a1f1a; border: 0; border-radius: 12px; padding: 9px 18px; font: inherit; font-weight: 600; cursor: pointer; }
+  .btn:disabled { opacity: .6; }
+  #astatus { color: var(--faint); font-size: 14px; margin-left: 10px; }
+  .res h3 { font-size: 13px; font-weight: 600; color: var(--faint); text-transform: uppercase; letter-spacing: .06em; margin: 18px 0 4px; }
   .res ul { margin: 0; padding-left: 18px; }
-  .res li { margin: 3px 0; }
-  .res .cc { list-style: none; padding: 0; }
-  .res .cc li { display: flex; gap: 8px; align-items: baseline; }
+  .ok { color: var(--sage); } .miss { color: var(--rose); }
 
-  @media (max-width: 960px) {
-    .grid { grid-template-columns: 1fr; }
-    .day { min-height: 0; }
-    .cols { grid-template-columns: 1fr; }
-  }
+  footer { margin-top: 48px; text-align: center; color: var(--faint); font-size: 13px; }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <div class="brand">
-      <div class="logo">S</div>
-      <div>
-        <h1>Second Brain</h1>
-        <p id="range">&nbsp;</p>
+  <h1 class="hello" id="hello">Hey.</h1>
+  <p class="sub" id="sub">&nbsp;</p>
+
+  <h2>Noch zu tun</h2>
+  <div id="hw"></div>
+
+  <h2 id="nextTitle">Morgen</h2>
+  <div class="lessons" id="next"></div>
+
+  <details id="weekBox">
+    <summary>Ganze Woche ansehen</summary>
+    <div class="inner">
+      <div class="weeknav">
+        <button class="ghost" id="prev" aria-label="Vorherige Woche">&larr;</button>
+        <span id="range"></span>
+        <button class="ghost" id="nextWeek" aria-label="Nächste Woche">&rarr;</button>
       </div>
+      <div id="grid"></div>
     </div>
-    <div style="display:flex;align-items:center;gap:12px">
-      <span id="status" class="muted"></span>
-      <div class="seg">
-        <button class="btn" id="prev" aria-label="Previous week">&larr;</button>
-        <button class="btn" id="today">This week</button>
-        <button class="btn" id="next" aria-label="Next week">&rarr;</button>
-      </div>
-    </div>
-  </header>
+  </details>
 
-  <div class="grid" id="grid"></div>
-
-  <div class="cols">
-    <section class="card panel">
-      <div class="section-head"><h2>Open homework</h2><span id="hwcount" class="muted"></span></div>
-      <div id="hw"></div>
-    </section>
-
-    <section class="card panel">
-      <div class="section-head"><h2>Analyze a lesson</h2><span class="muted">notes + homework cross-check</span></div>
-      <textarea id="tx" placeholder="Paste a lesson transcript…"></textarea>
-      <div class="actions">
-        <button class="btn primary" id="go">Analyze</button>
-        <span id="astatus" class="muted"></span>
-      </div>
+  <details>
+    <summary>Stunde nachbereiten</summary>
+    <div class="inner">
+      <textarea id="tx" placeholder="Mitschrift oder Transkript einfügen…"></textarea>
+      <button class="btn" id="go">Zusammenfassen</button><span id="astatus"></span>
       <div class="res" id="res"></div>
-    </section>
-  </div>
+    </div>
+  </details>
+
+  <footer>Eins nach dem anderen.</footer>
 </div>
 
 <script>
-let week = 0;
-const DAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday"];
-const STATUS = { cancelled: "Cancelled", substituted: "Substitute", room_changed: "Room change" };
 const $ = id => document.getElementById(id);
-const hm = iso => iso.slice(11,16);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const fmt = (d, o) => d.toLocaleDateString("en-GB", o);
+const hm = iso => iso.slice(11,16);
+const iso = d => d.toLocaleDateString("sv");
+const DAYS = ["Montag","Dienstag","Mittwoch","Donnerstag","Freitag"];
+const STATUS = { cancelled: "fällt aus", substituted: "Vertretung", room_changed: "Raumwechsel" };
+const today = new Date(); today.setHours(0,0,0,0);
+const monday = d => { const m = new Date(d); m.setDate(m.getDate() - (m.getDay() + 6) % 7); return m; };
+const daysUntil = s => Math.round((new Date(s + "T00:00") - today) / 864e5);
 
-// stable colour per subject code
-const hue = s => { let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) % 360; return h; };
-const color = s => `hsl(${hue(s.split("-")[0])} 65% 55%)`;
+// greeting
+const h = new Date().getHours();
+$("hello").textContent = h < 11 ? "Guten Morgen." : h < 17 ? "Hey." : "Guten Abend.";
 
-async function loadTimetable() {
-  $("status").textContent = "Loading…";
-  try {
-    const d = await (await fetch(`/api/timetable?week=${week}`)).json();
-    const start = new Date(d.start + "T00:00"), end = new Date(d.end + "T00:00");
-    $("range").textContent = `${fmt(start, {day:"numeric", month:"short"})} – ${fmt(end, {day:"numeric", month:"short", year:"numeric"})}`;
-    $("status").textContent = `${d.lessons.length} lessons`;
-    const todayStr = new Date().toLocaleDateString("sv");
-    $("grid").innerHTML = DAYS.map((name, i) => {
-      const day = new Date(start); day.setDate(start.getDate() + i);
-      const ds = day.toLocaleDateString("sv");
-      const rows = d.lessons.filter(l => l.start.startsWith(ds)).map(l => `
-        <div class="lesson ${l.status}" style="--c:${color(l.subject)}">
-          <div class="row">
-            <span class="subj">${esc(l.subject)}</span>
-            ${STATUS[l.status] ? `<span class="badge ${l.status}">${STATUS[l.status]}</span>` : `<span class="time">${hm(l.start)}</span>`}
-          </div>
-          <div class="meta">${STATUS[l.status] ? hm(l.start) + " · " : ""}${esc(l.rooms.join(", ") || "–")} · ${esc(l.teachers.join(", ") || "–")}</div>
-          ${l.note ? `<div class="note">${esc(l.note)}</div>` : ""}
-        </div>`).join("") || `<div class="empty">No lessons</div>`;
-      return `<div class="card day ${ds === todayStr ? "today" : ""}">
-        <div class="day-head"><span class="day-name">${name}</span><span class="day-date">${fmt(day, {day:"numeric", month:"short"})}</span></div>
-        ${rows}</div>`;
-    }).join("");
-  } catch (e) {
-    $("status").textContent = "Could not load timetable";
-  }
+// homework, ticked off locally
+const DONE_KEY = "hw-done";
+const done = new Set(JSON.parse(localStorage.getItem(DONE_KEY) || "[]"));
+let homework = [];
+
+function when(due) {
+  const n = daysUntil(due);
+  if (n < 0) return "überfällig";
+  if (n === 0) return "heute";
+  if (n === 1) return "morgen";
+  if (n < 7) return new Date(due + "T00:00").toLocaleDateString("de-DE", { weekday: "long" });
+  return `in ${n} Tagen`;
 }
+
+function renderHomework() {
+  const open = homework.filter(x => !done.has(x.id)).length;
+  $("sub").textContent = !homework.length || !open
+    ? "Alles erledigt. Du kannst abschalten."
+    : open === 1 ? "Nur noch eine Sache, dann ist Feierabend." : `Noch ${open} Sachen offen. Ganz entspannt.`;
+  $("hw").innerHTML = homework.map(x => `
+    <button class="hw ${done.has(x.id) ? "done" : ""}" data-id="${x.id}">
+      <span class="check"><svg viewBox="0 0 12 12" fill="none" stroke="#1c1a24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.5l2.2 2.2 4.8-5"/></svg></span>
+      <span style="flex:1;min-width:0">
+        <span class="top"><span class="subj">${esc(x.subject || "Hausaufgabe")}</span>
+          <span class="when ${daysUntil(x.due) <= 1 ? "soon" : ""}">${when(x.due)}</span></span>
+        <span class="txt" style="display:block">${esc(x.text)}</span>
+      </span>
+    </button>`).join("") || `<div class="calm"><b>Nichts offen</b>Genieß den Abend.</div>`;
+}
+
+$("hw").onclick = e => {
+  const el = e.target.closest(".hw"); if (!el) return;
+  const id = Number(el.dataset.id);
+  done.has(id) ? done.delete(id) : done.add(id);
+  localStorage.setItem(DONE_KEY, JSON.stringify([...done]));
+  renderHomework();
+};
 
 async function loadHomework() {
-  const hw = (await (await fetch("/api/homework")).json())
-    .filter(h => !h.completed).sort((a,b) => a.due.localeCompare(b.due));
-  $("hwcount").textContent = hw.length ? `${hw.length} open` : "";
-  $("hw").innerHTML = hw.map(h => {
-    const due = new Date(h.due + "T00:00");
-    return `<div class="hw">
-      <div class="due"><b>${due.getDate()}</b><span>${fmt(due, {month:"short"})}</span></div>
-      <div><div class="subj">${esc(h.subject || "Unknown")} <span class="muted">· ${esc(h.teacher || "–")}</span></div>
-      <div class="txt">${esc(h.text)}</div></div></div>`;
-  }).join("") || `<div class="empty">Nothing open. Nice.</div>`;
+  try {
+    homework = (await (await fetch("/api/homework")).json())
+      .filter(x => !x.completed).sort((a,b) => a.due.localeCompare(b.due));
+  } catch { homework = []; }
+  renderHomework();
 }
 
-$("prev").onclick = () => { week--; loadTimetable(); };
-$("next").onclick = () => { week++; loadTimetable(); };
-$("today").onclick = () => { week = 0; loadTimetable(); };
+// lessons
+const lessonRow = l => `
+  <div class="lesson ${l.status}">
+    <span class="time">${hm(l.start)}</span>
+    <span class="subj">${esc(l.subject)}${STATUS[l.status] ? `<span class="tag ${l.status}">${STATUS[l.status]}</span>` : ""}
+      ${l.note ? `<div class="note">${esc(l.note)}</div>` : ""}</span>
+    <span class="room">${esc(l.rooms.join(", "))}</span>
+  </div>`;
 
-const list = (title, xs) => xs.length ? `<h3>${title}</h3><ul>${xs.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : "";
-$("go").onclick = async () => {
-  const transcript = $("tx").value.trim();
-  if (!transcript) return;
-  $("go").disabled = true;
-  $("astatus").textContent = "Analyzing…";
+const fetchWeek = async off => (await fetch(`/api/timetable?week=${off}`)).json();
+
+async function loadNextDay() {
+  const d = new Date(today); d.setDate(d.getDate() + 1);
+  while (d.getDay() === 0 || d.getDay() === 6) d.setDate(d.getDate() + 1);
+  const off = Math.round((monday(d) - monday(today)) / (7 * 864e5));
+  $("nextTitle").textContent = daysUntil(iso(d)) === 1 ? "Morgen" : DAYS[(d.getDay() + 6) % 7];
   try {
-    const r = await fetch("/api/analyze", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ transcript }) });
-    if (!r.ok) { $("astatus").textContent = `Error ${r.status}`; return; }
+    const ls = (await fetchWeek(off)).lessons.filter(l => l.start.startsWith(iso(d)));
+    $("next").innerHTML = ls.map(lessonRow).join("") || `<div class="empty">Kein Unterricht. Schön.</div>`;
+  } catch { $("next").innerHTML = `<div class="empty">Stundenplan gerade nicht erreichbar.</div>`; }
+}
+
+let week = 0;
+async function loadTimetable() {
+  const d = await fetchWeek(week);
+  const start = new Date(d.start + "T00:00");
+  const f = x => x.toLocaleDateString("de-DE", { day: "numeric", month: "short" });
+  const fri = new Date(start); fri.setDate(start.getDate() + 4);
+  $("range").textContent = `${f(start)} – ${f(fri)}`;
+  $("grid").innerHTML = DAYS.map((name, i) => {
+    const day = new Date(start); day.setDate(start.getDate() + i);
+    const ls = d.lessons.filter(l => l.start.startsWith(iso(day)));
+    return `<div class="dayname ${iso(day) === iso(today) ? "today" : ""}">${name}</div>` +
+      (ls.map(lessonRow).join("") || `<div class="empty" style="padding:4px 0">frei</div>`);
+  }).join("");
+}
+$("prev").onclick = () => { week--; loadTimetable(); };
+$("nextWeek").onclick = () => { week++; loadTimetable(); };
+$("weekBox").addEventListener("toggle", e => { if (e.target.open && !$("grid").innerHTML) loadTimetable(); });
+
+// lesson analysis
+const list = (t, xs) => xs.length ? `<h3>${t}</h3><ul>${xs.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : "";
+$("go").onclick = async () => {
+  const transcript = $("tx").value.trim(); if (!transcript) return;
+  $("go").disabled = true; $("astatus").textContent = "einen Moment…";
+  try {
+    const r = await fetch("/api/analyze", { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ transcript }) });
+    if (!r.ok) { $("astatus").textContent = `Fehler ${r.status}`; return; }
     const a = await r.json();
-    $("astatus").textContent = `${a.lesson ? a.lesson.subject : "Unknown lesson"} · ${a.llm}`;
-    const cc = a.crosscheck.map(c => c.in_untis
-      ? `<li><span class="badge ok">In Untis</span> ${esc(c.spoken.text)}</li>`
-      : `<li><span class="badge miss">Not in Untis</span> ${esc(c.spoken.text)}${c.spoken.due ? ` <span class="muted">· due ${esc(c.spoken.due)}</span>` : ""}</li>`).join("");
-    $("res").innerHTML =
-      `<h3>Summary</h3><div>${esc(a.note.summary)}</div>` +
-      list("Concepts", a.note.concepts) + list("Definitions", a.note.definitions) + list("Test hints", a.note.test_hints) +
-      (cc ? `<h3>Homework cross-check</h3><ul class="cc">${cc}</ul>` : "");
-  } finally {
-    $("go").disabled = false;
-  }
+    $("astatus").textContent = a.lesson ? a.lesson.subject : "";
+    const cc = a.crosscheck.map(c => `<li>${c.in_untis ? `<span class="ok">steht in Untis</span>` : `<span class="miss">fehlt in Untis</span>`} · ${esc(c.spoken.text)}${c.spoken.due ? ` (bis ${esc(c.spoken.due)})` : ""}</li>`).join("");
+    $("res").innerHTML = `<h3>Kurz gesagt</h3><div>${esc(a.note.summary)}</div>` +
+      list("Wichtige Begriffe", a.note.concepts) + list("Definitionen", a.note.definitions) +
+      list("Kommt vielleicht dran", a.note.test_hints) + (cc ? `<h3>Hausaufgaben</h3><ul>${cc}</ul>` : "");
+  } finally { $("go").disabled = false; }
 };
-loadTimetable(); loadHomework();
+
+loadHomework(); loadNextDay();
 </script>
 </body>
 </html>
