@@ -35,6 +35,12 @@ def homework():
     return untis.homework(today - timedelta(days=14), today + timedelta(days=28))
 
 
+@app.get("/api/exams")
+def exams():
+    today = date.today()
+    return untis.exams(today, today + timedelta(days=60))
+
+
 class AnalyzeRequest(BaseModel):
     transcript: str
     at: datetime | None = None    # when the lesson happened; defaults to now
