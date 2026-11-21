@@ -30,7 +30,7 @@ class MockUntisProvider(UntisProvider):
                     id=l["id"], subject=l["subject"], teachers=l["teachers"], rooms=l["rooms"],
                     start=datetime.combine(day, time.fromisoformat(l["start"])),
                     end=datetime.combine(day, time.fromisoformat(l["end"])),
-                    status=l["status"],
+                    status=l["status"], note=l.get("note", ""),
                 ))
             d += timedelta(days=7)
         return sorted(out, key=lambda x: x.start)

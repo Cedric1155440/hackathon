@@ -1,14 +1,465 @@
 {
-  "lessons": [
-    {"id": 1, "subject": "PH-GK1", "teachers": ["MOCK"], "rooms": ["A101"], "day": 0, "start": "09:05", "end": "09:50", "status": "normal"},
-    {"id": 2, "subject": "M-GK4",  "teachers": ["MOCK"], "rooms": ["B204"], "day": 0, "start": "10:35", "end": "11:20", "status": "normal"},
-    {"id": 3, "subject": "E5-GK3", "teachers": ["MOCK"], "rooms": ["C007"], "day": 1, "start": "08:00", "end": "08:45", "status": "cancelled"},
-    {"id": 4, "subject": "D-GK4",  "teachers": ["MOCK"], "rooms": ["A110"], "day": 2, "start": "09:05", "end": "09:50", "status": "room_changed"}
-  ],
-  "homework": [
-    {"id": 9001, "lesson_id": 2, "subject": "M-GK4", "teacher": "MOCK", "assigned_offset": -2, "due_offset": 3, "text": "Aufgabenblatt 5, Nr. 1-4", "completed": false}
-  ],
-  "exams": [
-    {"id": 1, "subject": "M-GK4", "offset": 14, "text": "Klausur Analysis"}
-  ]
+ "lessons": [
+  {
+   "id": 1,
+   "subject": "PH-GK1",
+   "teachers": [
+    "Braun"
+   ],
+   "rooms": [
+    "PH2"
+   ],
+   "day": 0,
+   "start": "08:00",
+   "end": "08:45",
+   "status": "normal",
+   "note": ""
+  },
+  {
+   "id": 2,
+   "subject": "M-GK4",
+   "teachers": [
+    "Weber"
+   ],
+   "rooms": [
+    "B204"
+   ],
+   "day": 0,
+   "start": "08:50",
+   "end": "09:35",
+   "status": "normal",
+   "note": ""
+  },
+  {
+   "id": 3,
+   "subject": "E5-GK3",
+   "teachers": [
+    "Berger"
+   ],
+   "rooms": [
+    "C206"
+   ],
+   "day": 1,
+   "start": "08:00",
+   "end": "08:45",
+   "status": "cancelled",
+   "note": "Entfall"
+  },
+  {
+   "id": 4,
+   "subject": "D-GK4",
+   "teachers": [
+    "Klein"
+   ],
+   "rooms": [
+    "A110"
+   ],
+   "day": 2,
+   "start": "08:00",
+   "end": "08:45",
+   "status": "room_changed",
+   "note": "Raumwechsel: A110 statt A108"
+  },
+  {
+   "id": 5,
+   "subject": "D-GK4",
+   "teachers": [
+    "Klein"
+   ],
+   "rooms": [
+    "A108"
+   ],
+   "day": 0,
+   "start": "09:55",
+   "end": "10:40",
+   "status": "normal",
+   "note": ""
+  },
+  {
+   "id": 6,
+   "subject": "E5-GK3",
+   "teachers": [
+    "Berger"
+   ],
+   "rooms": [
+    "C206"
+   ],
+   "day": 0,
+   "start": "10:45",
+   "end": "11:30",
+   "status": "normal",
+   "note": ""
+  },
+  {
+   "id": 7,
+   "subject": "BI-GK1",
+   "teachers": [
+    "Hoffmann"
+   ],
+   "rooms": [
+    "BIO1"
+   ],
+   "day": 0,
+   "start": "11:35",
+   "end": "12:20",
+   "status": "normal",
+   "note": ""
+  },
+  {
+   "id": 8,
+   "subject": "GE-GK2",
+   "teachers": [
+    "Wolf"
+   ],
+   "rooms": [
+    "A108"
+   ],
+   "day": 0,
+   "start": "12:25",
+   "end": "13:10",
+   "status": "normal",
+   "note": ""
+  },
+  {
+   "id": 9,
+   "subject": "E5-GK3",
+   "teachers": [
+    "Berger"
+   ],
+   "rooms": [
+    "C206"
+   ],
+   "day": 1,
+   "start": "08:50",
+   "end": "09:35",
+   "status": "normal",
+   "note": ""
+  },
+  {
+   "id": 10,
+   "subject": "PH-GK1",
+   "teachers": [
+    "Braun"
+   ],
+   "rooms": [
+    "PH2"
+   ],
+   "day": 1,
+   "start": "09:55",
+   "end": "10:40",
+   "status": "normal",
+   "note": ""
+  },
+  {
+   "id": 11,
+   "subject": "PH-GK1",
+   "teachers": [
+    "Braun"
+   ],
+   "rooms": [
+    "PH2"
+   ],
+   "day": 1,
+   "start": "10:45",
+   "end": "11:30",
+   "status": "normal",
+   "note": ""
+  },
+  {
+   "id": 12,
+   "subject": "SP-GK3",
+   "teachers": [
+    "Koch"
+   ],
+   "rooms": [
+    "Halle 1"
+   ],
+   "day": 1,
+   "start": "11:35",
+   "end": "12:20",
+   "status": "normal",
+   "note": ""
+  },
+  {
+   "id": 13,
+   "subject": "SP-GK3",
+   "teachers": [
+    "Koch"
+   ],
+   "rooms": [
+    "Halle 1"
+   ],
+   "day": 1,
+   "start": "12:25",
+   "end": "13:10",
+   "status": "normal",
+   "note": ""
+  },
+  {
+   "id": 14,
+   "subject": "BI-GK1",
+   "teachers": [
+    "Hoffmann"
+   ],
+   "rooms": [
+    "BIO1"
+   ],
+   "day": 2,
+   "start": "08:50",
+   "end": "09:35",
+   "status": "normal",
+   "note": ""
+  },
+  {
+   "id": 15,
+   "subject": "M-GK4",
+   "teachers": [
+    "Weber"
+   ],
+   "rooms": [
+    "B204"
+   ],
+   "day": 2,
+   "start": "09:55",
+   "end": "10:40",
+   "status": "normal",
+   "note": ""
+  },
+  {
+   "id": 16,
+   "subject": "D-GK4",
+   "teachers": [
+    "Klein"
+   ],
+   "rooms": [
+    "A108"
+   ],
+   "day": 2,
+   "start": "10:45",
+   "end": "11:30",
+   "status": "normal",
+   "note": ""
+  },
+  {
+   "id": 17,
+   "subject": "KU-GK1",
+   "teachers": [
+    "Lange"
+   ],
+   "rooms": [
+    "KU1"
+   ],
+   "day": 2,
+   "start": "11:35",
+   "end": "12:20",
+   "status": "normal",
+   "note": ""
+  },
+  {
+   "id": 18,
+   "subject": "GE-GK2",
+   "teachers": [
+    "Wolf"
+   ],
+   "rooms": [
+    "A108"
+   ],
+   "day": 3,
+   "start": "08:00",
+   "end": "08:45",
+   "status": "normal",
+   "note": ""
+  },
+  {
+   "id": 19,
+   "subject": "M-GK4",
+   "teachers": [
+    "Weber"
+   ],
+   "rooms": [
+    "B204"
+   ],
+   "day": 3,
+   "start": "08:50",
+   "end": "09:35",
+   "status": "normal",
+   "note": ""
+  },
+  {
+   "id": 20,
+   "subject": "CH-GK2",
+   "teachers": [
+    "Schmidt"
+   ],
+   "rooms": [
+    "CH1"
+   ],
+   "day": 3,
+   "start": "09:55",
+   "end": "10:40",
+   "status": "normal",
+   "note": ""
+  },
+  {
+   "id": 21,
+   "subject": "CH-GK2",
+   "teachers": [
+    "Schmidt"
+   ],
+   "rooms": [
+    "CH1"
+   ],
+   "day": 3,
+   "start": "10:45",
+   "end": "11:30",
+   "status": "normal",
+   "note": ""
+  },
+  {
+   "id": 22,
+   "subject": "E5-GK3",
+   "teachers": [
+    "Berger"
+   ],
+   "rooms": [
+    "C206"
+   ],
+   "day": 3,
+   "start": "11:35",
+   "end": "12:20",
+   "status": "substituted",
+   "note": "Vertretung durch Fr. Lange"
+  },
+  {
+   "id": 23,
+   "subject": "D-GK4",
+   "teachers": [
+    "Klein"
+   ],
+   "rooms": [
+    "A108"
+   ],
+   "day": 4,
+   "start": "08:00",
+   "end": "08:45",
+   "status": "normal",
+   "note": ""
+  },
+  {
+   "id": 24,
+   "subject": "M-GK4",
+   "teachers": [
+    "Weber"
+   ],
+   "rooms": [
+    "B204"
+   ],
+   "day": 4,
+   "start": "08:50",
+   "end": "09:35",
+   "status": "normal",
+   "note": ""
+  },
+  {
+   "id": 25,
+   "subject": "IF-GK1",
+   "teachers": [
+    "Neumann"
+   ],
+   "rooms": [
+    "C310"
+   ],
+   "day": 4,
+   "start": "09:55",
+   "end": "10:40",
+   "status": "normal",
+   "note": ""
+  },
+  {
+   "id": 26,
+   "subject": "IF-GK1",
+   "teachers": [
+    "Neumann"
+   ],
+   "rooms": [
+    "C310"
+   ],
+   "day": 4,
+   "start": "10:45",
+   "end": "11:30",
+   "status": "normal",
+   "note": ""
+  },
+  {
+   "id": 27,
+   "subject": "MU-GK1",
+   "teachers": [
+    "Richter"
+   ],
+   "rooms": [
+    "MU1"
+   ],
+   "day": 4,
+   "start": "11:35",
+   "end": "12:20",
+   "status": "normal",
+   "note": ""
+  }
+ ],
+ "homework": [
+  {
+   "id": 9001,
+   "lesson_id": 2,
+   "subject": "M-GK4",
+   "teacher": "Weber",
+   "assigned_offset": -2,
+   "due_offset": 3,
+   "text": "Aufgabenblatt 5, Nr. 1-4",
+   "completed": false
+  },
+  {
+   "id": 9002,
+   "lesson_id": null,
+   "subject": "E5-GK3",
+   "teacher": "Berger",
+   "assigned_offset": -1,
+   "due_offset": 4,
+   "text": "Read pages 34-38 and write a short summary",
+   "completed": false
+  },
+  {
+   "id": 9003,
+   "lesson_id": null,
+   "subject": "D-GK4",
+   "teacher": "Klein",
+   "assigned_offset": -3,
+   "due_offset": 6,
+   "text": "Erörterung zum Thema Social Media (1 Seite)",
+   "completed": false
+  },
+  {
+   "id": 9004,
+   "lesson_id": null,
+   "subject": "BI-GK1",
+   "teacher": "Hoffmann",
+   "assigned_offset": -5,
+   "due_offset": -1,
+   "text": "Zellmodell skizzieren",
+   "completed": true
+  }
+ ],
+ "exams": [
+  {
+   "id": 1,
+   "subject": "M-GK4",
+   "offset": 14,
+   "text": "Klausur Analysis"
+  },
+  {
+   "id": 2,
+   "subject": "E5-GK3",
+   "offset": 9,
+   "text": "Vocabulary test Unit 3"
+  }
+ ]
 }
