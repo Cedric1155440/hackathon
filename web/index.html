@@ -42,6 +42,11 @@
   .res li::before { content:"- "; color:var(--dim); }
   .ok { color:var(--green); }
   .miss { color:var(--red); }
+  .up { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  .up input[type=text], .up select { background:#0f0f0f; color:var(--fg); border:1px solid #333; font:inherit; padding:3px 6px; }
+  .up input[type=file] { color:var(--dim); font:inherit; }
+  .mat { display:flex; gap:10px; align-items:center; margin:6px 0; }
+  .mat img { height:48px; width:48px; object-fit:cover; border:1px solid #333; }
   @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
 </style>
 </head>
@@ -59,6 +64,18 @@
   <h2><span class="prompt">[<span class="user">hangul</span>@school ~]$</span> homework --open</h2>
   <div id="hw"></div>
 
+  <h2><span class="prompt">[<span class="user">hangul</span>@school ~]$</span> upload --photo</h2>
+  <div class="up">
+    <input type="file" id="file" accept="image/jpeg,image/png,image/webp">
+    <input type="text" id="kurs" list="kurse" placeholder="kurs, e.g. E5-GK3" size="14">
+    <datalist id="kurse"></datalist>
+    <select id="kind"><option>exam</option><option>worksheet</option><option>book</option><option>board</option><option>notes</option></select>
+    <input type="text" id="title" placeholder="title (optional)" size="18">
+    <button class="run" id="up" style="margin-top:0">upload</button>
+    <span id="ustatus" class="dim"></span>
+  </div>
+  <div id="mats"></div>
+
   <h2><span class="prompt">[<span class="user">hangul</span>@school ~]$</span> analyze --lesson</h2>
   <textarea id="tx" placeholder="paste a lesson transcript..."></textarea>
   <div><button class="run" id="go">run</button> <span id="astatus" class="dim"></span></div>
@@ -67,6 +84,7 @@
 
 <script>
 let week = 0;
+const kurse = new Set();
 const DAYS = ["Mon","Tue","Wed","Thu","Fri"];
 const $ = id => document.getElementById(id);
 const hm = iso => iso.slice(11,16);
@@ -78,6 +96,8 @@ async function loadTimetable() {
   const d = await r.json();
   $("range").textContent = `${d.start} .. ${d.end}`;
   $("status").textContent = `${d.lessons.length} lessons`;
+  d.lessons.forEach(l => kurse.add(l.subject));
+  $("kurse").innerHTML = [...kurse].sort().map(k => `<option value="${esc(k)}">`).join("");
   const todayStr = new Date().toLocaleDateString("sv");
   const start = new Date(d.start + "T00:00");
   $("grid").innerHTML = DAYS.map((name, i) => {
@@ -124,7 +144,30 @@ $("go").onclick = async () => {
     list("concepts", a.note.concepts) + list("definitions", a.note.definitions) + list("test hints", a.note.test_hints) +
     (cc ? `<div class="sec">homework cross-check</div><ul>${cc}</ul>` : "");
 };
-loadTimetable(); loadHomework();
+
+async function loadMaterials() {
+  const ms = await (await fetch("/api/materials")).json();
+  $("mats").innerHTML = ms.map(m => `
+    <div class="mat"><img src="/api/materials/${m.id}/file" alt="">
+    <div><span class="ok">#${m.id}</span> ${esc(m.kind)} <span class="dim">${esc(m.kurs)} · ${esc(m.created.slice(0,10))}</span>
+    <div class="dim">${esc(m.title || m.filename)}${m.has_text ? "" : " · text not read yet"}</div></div></div>`).join("")
+    || `<span class="dim">no uploads yet</span>`;
+}
+$("up").onclick = async () => {
+  const f = $("file").files[0];
+  if (!f) { $("ustatus").textContent = "pick a photo first"; return; }
+  if (!$("kurs").value.trim()) { $("ustatus").textContent = "enter a kurs"; return; }
+  const fd = new FormData();
+  fd.append("file", f); fd.append("kurs", $("kurs").value); fd.append("kind", $("kind").value); fd.append("title", $("title").value);
+  $("up").disabled = true; $("ustatus").textContent = "uploading...";
+  try {
+    const r = await fetch("/api/materials", { method: "POST", body: fd });
+    const j = await r.json();
+    $("ustatus").textContent = r.ok ? (j.duplicate ? `already uploaded (#${j.id})` : `saved #${j.id}`) : (j.detail || `error ${r.status}`);
+    if (r.ok) { $("file").value = ""; $("title").value = ""; loadMaterials(); }
+  } finally { $("up").disabled = false; }
+};
+loadTimetable(); loadHomework(); loadMaterials();
 </script>
 </body>
 </html>
